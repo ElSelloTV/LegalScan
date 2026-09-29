@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -27,6 +29,15 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.LegalScan">
+
+        <!--
+          ID de app de AdMob. Este es el ID DE PRUEBA oficial de Google — anuncios de test,
+          no genera ingresos. Reemplazar por el ID real (ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY)
+          de tu cuenta de AdMob antes de publicar en Play Store.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <activity
             android:name=".MainActivity"

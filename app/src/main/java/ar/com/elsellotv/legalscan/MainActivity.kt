@@ -1,6 +1,7 @@
 package ar.com.elsellotv.legalscan
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -28,7 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ar.com.elsellotv.legalscan.ads.AppOpenAdManager
 import ar.com.elsellotv.legalscan.ui.theme.LegalScanTheme
+import com.google.android.gms.ads.MobileAds
+import com.google.android.ump.ConsentInformation
+import com.google.android.ump.ConsentRequestParameters
+import com.google.android.ump.UserMessagingPlatform
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanner
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
@@ -44,10 +50,12 @@ class MainActivity : ComponentActivity() {
         .build()
 
     private lateinit var scanner: GmsDocumentScanner
+    private val appOpenAdManager = AppOpenAdManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         scanner = GmsDocumentScanning.getClient(scannerOptions)
+        setUpAdsWithConsent()
 
         setContent {
             var uiState by remember { mutableStateOf<ScanUiState>(ScanUiState.Idle) }
@@ -87,6 +95,45 @@ class MainActivity : ComponentActivity() {
             .addOnFailureListener {
                 // El usuario canceló el permiso de cámara o Google Play services no está disponible.
             }
+    }
+
+    /**
+     * Antes de pedir anuncios hay que consultar (y, si corresponde, mostrar) el formulario de
+     * consentimiento de Google (UMP) — obligatorio para usuarios de UE/Reino Unido/California.
+     * Recién si el usuario puede recibir anuncios se inicializa el SDK y se muestra el único
+     * anuncio de la app (App Open Ad de arranque).
+     */
+    private fun setUpAdsWithConsent() {
+        val consentInformation = UserMessagingPlatform.getConsentInformation(this)
+        val params = ConsentRequestParameters.Builder().build()
+
+        consentInformation.requestConsentInfoUpdate(
+            this,
+            params,
+            {
+                UserMessagingPlatform.loadAndShowConsentFormIfRequired(this) { formError ->
+                    if (formError != null) {
+                        Log.w(TAG, "Formulario de consentimiento: ${formError.message}")
+                    }
+                    showAppOpenAdIfAllowed(consentInformation)
+                }
+            },
+            { requestConsentError ->
+                Log.w(TAG, "No se pudo actualizar el consentimiento: ${requestConsentError.message}")
+                showAppOpenAdIfAllowed(consentInformation)
+            },
+        )
+    }
+
+    private fun showAppOpenAdIfAllowed(consentInformation: ConsentInformation) {
+        if (!consentInformation.canRequestAds()) return
+        MobileAds.initialize(this) {
+            appOpenAdManager.loadAndShow(this, getString(R.string.app_open_ad_unit_id))
+        }
+    }
+
+    private companion object {
+        const val TAG = "MainActivity"
     }
 }
 
