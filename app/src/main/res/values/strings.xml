@@ -20,6 +20,9 @@
 
     <string name="privacy_note">El PDF es temporal: no se guarda en la galería ni en Descargas.</string>
     <string name="legal_disclaimer">LegalScan es una herramienta de escaneo. No brinda asesoramiento jurídico ni reemplaza la intervención de un abogado matriculado.</string>
+    <string name="privacy_policy_link">Política de privacidad</string>
+    <string name="privacy_policy_url" translatable="false">https://elsellotv.com.ar/legalscan-privacidad.html</string>
+    <string name="version_label">Versión %1$s</string>
 
     <!-- Ad Unit ID del App Open Ad "LegalScan - App Open" (cuenta real de AdMob) -->
     <string name="app_open_ad_unit_id" translatable="false">ca-app-pub-3067537335486404/8940502194</string>
