@@ -28,14 +28,14 @@ No se usó ninguna librería propia de recorte/detección de bordes: ML Kit ya l
 
 Pasos: `File → Open` → elegir esta carpeta. Android Studio detecta el `gradlew` incluido y sincroniza solo. Compilé y verifiqué el proyecto en este entorno (`./gradlew :app:assembleDebug`) antes de subirlo — quedó verde.
 
-## Publicidad (AdMob) — falta cargar tus IDs reales
+## Publicidad (AdMob)
 
-El proyecto está armado con los **IDs de prueba oficiales de Google** para que compile y se pueda probar ya mismo. Antes de publicar hay que reemplazarlos por los tuyos (se generan en [admob.google.com](https://admob.google.com), registrando la app y creando una unidad de anuncio tipo "App Open Ad"):
+La app usa la cuenta real de AdMob de LegalScan:
 
-- `app/src/main/AndroidManifest.xml` → meta-data `com.google.android.gms.ads.APPLICATION_ID` (el AdMob App ID).
-- `app/src/main/res/values/strings.xml` → `app_open_ad_unit_id` (el Ad Unit ID del App Open Ad).
+- `app/src/main/AndroidManifest.xml` → meta-data `com.google.android.gms.ads.APPLICATION_ID` = AdMob App ID.
+- `app/src/main/res/values/strings.xml` → `app_open_ad_unit_id` = Ad Unit ID de "LegalScan - App Open".
 
-Ambos están marcados con un comentario `<!-- ... -->` que dice exactamente qué reemplazar. Mientras sigan los IDs de prueba, la app muestra anuncios de test reales (no genera ingresos, pero sirve para verificar que todo el flujo funciona).
+Hasta que Google apruebe la app vinculada a la ficha de Play Store, AdMob sigue sirviendo anuncios de prueba en su lugar (comportamiento normal, no hay que tocar nada). Una vez publicada y aprobada, empiezan a mostrarse anuncios reales sin ningún cambio de código.
 
 ## Qué falta antes de subir a Play Store
 
@@ -43,7 +43,7 @@ Ambos están marcados con un comentario `<!-- ... -->` que dice exactamente qué
 - **Política de privacidad**: ya redactada y publicada (incluye la sección de publicidad/AdMob) — falta completar el nombre del titular tal como figura en Play Console.
 - **Firma de la app**: falta generar el keystore de release y configurar `signingConfig` en `app/build.gradle.kts` (no lo hice porque es una clave privada tuya, no algo que deba generar por vos sin que la resguardes).
 - **Ficha de Play Store**: capturas de pantalla, descripción, clasificación de contenido, y el cuestionario de **Seguridad de los datos** — ahí hay que declarar que se comparte el identificador de publicidad con Google (AdMob) para publicidad, ya no "no data collected".
-- **IDs reales de AdMob**: ver sección de arriba.
+- **Vincular AdMob con la ficha de Play Store**: una vez creada la ficha en Play Console, hay que enlazarla desde AdMob (Apps → LegalScan → vincular con Play Store) para salir del período de anuncios limitados.
 
 ## Estructura del proyecto
 

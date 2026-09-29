@@ -30,14 +30,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LegalScan">
 
-        <!--
-          ID de app de AdMob. Este es el ID DE PRUEBA oficial de Google — anuncios de test,
-          no genera ingresos. Reemplazar por el ID real (ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY)
-          de tu cuenta de AdMob antes de publicar en Play Store.
-        -->
+        <!-- ID de app de AdMob (LegalScan, cuenta real) -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-3067537335486404~1604937653" />
 
         <activity
             android:name=".MainActivity"

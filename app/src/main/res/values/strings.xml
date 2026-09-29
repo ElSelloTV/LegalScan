@@ -18,10 +18,6 @@
 
     <string name="privacy_note">El PDF es temporal: no se guarda en la galería ni en Descargas.</string>
 
-    <!--
-      ID DE PRUEBA oficial de Google para el anuncio "App Open Ad" de Android.
-      Reemplazar por el Ad Unit ID real (ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ) de tu
-      cuenta de AdMob antes de publicar en Play Store.
-    -->
-    <string name="app_open_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/9257395921</string>
+    <!-- Ad Unit ID del App Open Ad "LegalScan - App Open" (cuenta real de AdMob) -->
+    <string name="app_open_ad_unit_id" translatable="false">ca-app-pub-3067537335486404/8940502194</string>
 </resources>
