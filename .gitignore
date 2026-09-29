@@ -10,3 +10,9 @@
 local.properties
 app/build/
 .kotlin/
+
+# Nunca subir claves de firma ni credenciales al repo
+*.jks
+*.keystore
+keystore/
+keystore.properties

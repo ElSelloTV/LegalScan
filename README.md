@@ -16,7 +16,7 @@ App Android para abogados: convierte fotos (sacadas con la cámara o recibidas p
 - [ML Kit Document Scanner](https://developers.google.com/ml-kit/vision/doc-scanner) (`com.google.android.gms:play-services-mlkit-document-scanner`) — detección de bordes, recorte, enderezado y generación de PDF, todo on-device.
 - [Google Mobile Ads](https://developers.google.com/admob/android/quick-start) (`com.google.android.gms:play-services-ads`) — un único App Open Ad al arrancar (`app/src/main/java/.../ads/AppOpenAdManager.kt`).
 - [User Messaging Platform](https://developers.google.com/admob/ump/android/quick-start) (`com.google.android.ump:user-messaging-platform`) — formulario de consentimiento de anuncios, obligatorio en UE/Reino Unido/California antes de mostrar el anuncio.
-- minSdk 26 (Android 8.0+), compileSdk / targetSdk 34.
+- minSdk 26 (Android 8.0+), compileSdk / targetSdk 36 (Android 16 — requisito obligatorio de Google Play desde el 31/08/2026).
 
 No se usó ninguna librería propia de recorte/detección de bordes: ML Kit ya lo resuelve, así que el código de la app se limita a la UI y a armar los intents para compartir. Esto mantiene el proyecto simple y fácil de mantener.
 
@@ -37,11 +37,31 @@ La app usa la cuenta real de AdMob de LegalScan:
 
 Hasta que Google apruebe la app vinculada a la ficha de Play Store, AdMob sigue sirviendo anuncios de prueba en su lugar (comportamiento normal, no hay que tocar nada). Una vez publicada y aprobada, empiezan a mostrarse anuncios reales sin ningún cambio de código.
 
+## Firma de release
+
+`app/build.gradle.kts` ya tiene el `signingConfig` de release armado, pero **no lee ninguna clave desde el repo** (por seguridad, nunca se sube un keystore ni sus contraseñas a git). Toma estos cuatro valores como propiedades de Gradle:
+
+- `legalscanStoreFile` → ruta al archivo `.jks`/`.keystore`
+- `legalscanStorePassword`
+- `legalscanKeyAlias`
+- `legalscanKeyPassword`
+
+Sin esas propiedades, el build type `release` queda simplemente sin firmar (pero compila igual). Para firmar, la forma recomendada es agregar esas cuatro líneas a `~/.gradle/gradle.properties` (carpeta personal del usuario, **fuera** del proyecto, nunca se sube a git):
+
+```properties
+legalscanStoreFile=/ruta/absoluta/a/tu-keystore.jks
+legalscanStorePassword=...
+legalscanKeyAlias=...
+legalscanKeyPassword=...
+```
+
+y después compilar normalmente con `./gradlew :app:bundleRelease` (genera el `.aab` para subir a Play Console) o abrir el proyecto en Android Studio, que lee ese mismo archivo automáticamente.
+
 ## Qué falta antes de subir a Play Store
 
 - **Ícono final**: el ícono actual es un placeholder simple (documento + esquinas de encuadre) hecho en vector, para que compile sin depender de archivos gráficos externos. Conviene reemplazarlo por un diseño definitivo antes de publicar.
 - **Política de privacidad**: ya redactada y publicada (incluye la sección de publicidad/AdMob) — falta completar el nombre del titular tal como figura en Play Console.
-- **Firma de la app**: falta generar el keystore de release y configurar `signingConfig` en `app/build.gradle.kts` (no lo hice porque es una clave privada tuya, no algo que deba generar por vos sin que la resguardes).
+- **Firma de la app**: ver sección de arriba — falta cargar la clave de firma existente (la misma que usás en tus otras apps) como propiedades locales de Gradle.
 - **Ficha de Play Store**: capturas de pantalla, descripción, clasificación de contenido, y el cuestionario de **Seguridad de los datos** — ahí hay que declarar que se comparte el identificador de publicidad con Google (AdMob) para publicidad, ya no "no data collected".
 - **Vincular AdMob con la ficha de Play Store**: una vez creada la ficha en Play Console, hay que enlazarla desde AdMob (Apps → LegalScan → vincular con Play Store) para salir del período de anuncios limitados.
 

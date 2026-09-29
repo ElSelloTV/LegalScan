@@ -4,21 +4,41 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+// Datos de firma de release: SIEMPRE afuera del repo. Se toman de propiedades de Gradle
+// (project.findProperty), que normalmente viven en ~/.gradle/gradle.properties (carpeta
+// personal del usuario, nunca en el proyecto) o se pasan con -P al invocar Gradle.
+// Sin esas propiedades, el build type "release" queda simplemente sin firmar.
+val releaseStoreFile = project.findProperty("legalscanStoreFile") as String?
+
 android {
     namespace = "ar.com.elsellotv.legalscan"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "ar.com.elsellotv.legalscan"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
-        versionName = "1.0.0"
+        versionName = "1.0"
+    }
+
+    signingConfigs {
+        if (releaseStoreFile != null) {
+            create("release") {
+                storeFile = file(releaseStoreFile)
+                storePassword = project.findProperty("legalscanStorePassword") as String
+                keyAlias = project.findProperty("legalscanKeyAlias") as String
+                keyPassword = project.findProperty("legalscanKeyPassword") as String
+            }
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
+            if (releaseStoreFile != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

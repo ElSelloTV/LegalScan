@@ -216,5 +216,11 @@ private fun ScanScreen(
             text = stringResource(R.string.privacy_note),
             style = MaterialTheme.typography.labelSmall,
         )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = stringResource(R.string.legal_disclaimer),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
