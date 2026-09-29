@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">LegalScan</string>
+
+    <string name="home_title">LegalScan</string>
+    <string name="home_subtitle">Escaneá un documento y compartilo al instante. Nada queda guardado en el celular.</string>
+    <string name="scan_button">Escanear / importar documento</string>
+    <string name="scan_error">No se pudo completar el escaneo. Probá de nuevo.</string>
+
+    <string name="result_title">Documento listo</string>
+    <string name="result_pages">%1$d página(s) escaneada(s)</string>
+    <string name="share_whatsapp">Compartir por WhatsApp</string>
+    <string name="share_email">Enviar por correo</string>
+    <string name="share_other">Compartir con otra app</string>
+    <string name="new_scan">Escanear otro documento</string>
+
+    <string name="whatsapp_not_installed">WhatsApp no está instalado en este celular</string>
+    <string name="email_subject">Documento escaneado</string>
+
+    <string name="privacy_note">El PDF es temporal: no se guarda en la galería ni en Descargas.</string>
+</resources>
