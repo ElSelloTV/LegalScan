@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import ar.com.elsellotv.legalscan.ads.AppOpenAdManager
 import ar.com.elsellotv.legalscan.ui.theme.LegalScanTheme
 import com.google.android.gms.ads.MobileAds
@@ -39,6 +40,9 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScanner
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
@@ -66,10 +70,19 @@ class MainActivity : ComponentActivity() {
                 if (activityResult.resultCode == RESULT_OK) {
                     val result = GmsDocumentScanningResult.fromActivityResultIntent(activityResult.data)
                     val pdf = result?.pdf
-                    uiState = if (pdf != null) {
-                        ScanUiState.Ready(pdf.uri, pdf.pageCount)
+                    if (pdf != null) {
+                        uiState = ScanUiState.Processing
+                        lifecycleScope.launch {
+                            uiState = try {
+                                val shareableUri = withContext(Dispatchers.IO) { PdfCache.store(this@MainActivity, pdf.uri) }
+                                ScanUiState.Ready(shareableUri, pdf.pageCount)
+                            } catch (e: Exception) {
+                                Log.w(TAG, "No se pudo preparar el PDF para compartir: ${e.message}")
+                                ScanUiState.Error(getString(R.string.scan_error))
+                            }
+                        }
                     } else {
-                        ScanUiState.Error(getString(R.string.scan_error))
+                        uiState = ScanUiState.Error(getString(R.string.scan_error))
                     }
                 }
                 // resultCode == RESULT_CANCELED: el usuario canceló, dejamos el estado como está.
@@ -165,6 +178,10 @@ private fun ScanScreen(
                 Button(onClick = onScanClick, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.scan_button))
                 }
+            }
+
+            is ScanUiState.Processing -> {
+                Text(text = stringResource(R.string.processing))
             }
 
             is ScanUiState.Ready -> {

@@ -44,6 +44,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--
+          FileProvider propio: el PDF que entrega ML Kit vive en un proveedor de Google que
+          solo LegalScan puede leer, así que antes de compartirlo lo copiamos a esta caché y lo
+          exponemos con nuestro propio FileProvider (el único mecanismo que Android permite
+          re-otorgar a terceros como WhatsApp o Gmail).
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>
